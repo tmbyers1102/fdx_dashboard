@@ -11,7 +11,6 @@ from products.serializers import ProductSerializer
 @api_view(["POST"])
 def api_home(request, *args, **kwargs):
 
-    data = request.data
     serializer = ProductSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
         # instance = serializer.save()

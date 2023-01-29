@@ -1,7 +1,10 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.authtoken.views import obtain_auth_token
 
 from . import views
 
 urlpatterns = [
-    path('', views.api_home)
+    path('auth/', obtain_auth_token),
+    path('', views.api_home),
+    # path('products/', include('products.urls)) not being used, but could set up api urls this way
 ]
