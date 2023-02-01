@@ -70,6 +70,9 @@ CORS_URLS_REGEX = r"^/api/.*"
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:8111',
     'https://localhost:8111',
+    'http://localhost:5174',
+    'http://localhost:5173',
+    # 'http://localhost:5174/epfm-dashboard/',
 ]
 
 # if DEBUG:
