@@ -3,12 +3,12 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.shortcuts import get_list_or_404, get_object_or_404
 
-from api.mixins import StaffEditorPermissionMixin
+from api.mixins import (StaffEditorPermissionMixin, UserQuerySetMixin)
 from .models import Product
 from .serializers import ProductSerializer
 
 # this is a view that either creates a product or shows a list of all products
-class ProductListCreateAPIView(StaffEditorPermissionMixin, generics.ListCreateAPIView):
+class ProductListCreateAPIView(StaffEditorPermissionMixin, UserQuerySetMixin, generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     # auth class handled as default in settings
@@ -17,13 +17,21 @@ class ProductListCreateAPIView(StaffEditorPermissionMixin, generics.ListCreateAP
     def perform_create(self, serializer):
         # this is how you attach the current user to a created record
         # serializer.save(user=self.request.user)
-        print(serializer.validated_data)
+        # print(serializer.validated_data)
         title = serializer.validated_data.get('title')
         content = serializer.validated_data.get('content') or None
         if content is None:
             content = title
-        serializer.save(content=content)
+        serializer.save(user=self.request.user, content=content)
         # you can also send a django signal from here
+
+    # this is being handled via the UserQuerySetMixin
+    # def get_queryset(self, *args, **kwargs):
+    #     qs = super().get_queryset(*args, **kwargs)
+    #     request = self.request
+    #     # print(request.user)
+    #     # want to run logic for if user is not authenticated? (3:57:32)
+    #     return qs.filter(user=request.user)
 
 product_list_create_view = ProductListCreateAPIView.as_view()
 
@@ -46,7 +54,7 @@ product_list_create_view = ProductListCreateAPIView.as_view()
 
 # product_create_view = ProductCreateAPIView.as_view()
 
-class ProductDetailAPIView(StaffEditorPermissionMixin, generics.RetrieveAPIView):
+class ProductDetailAPIView(StaffEditorPermissionMixin, UserQuerySetMixin, generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     # lookup_field = 'pk'
@@ -54,7 +62,7 @@ class ProductDetailAPIView(StaffEditorPermissionMixin, generics.RetrieveAPIView)
 # this was set up in the video (01:32:45) but he mentioned it isnt being used but is another way to set this up in relation to urls
 product_detail_view = ProductDetailAPIView.as_view()
 
-class ProductUpdateAPIView(StaffEditorPermissionMixin, generics.UpdateAPIView):
+class ProductUpdateAPIView(StaffEditorPermissionMixin, UserQuerySetMixin, generics.UpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
@@ -67,7 +75,7 @@ class ProductUpdateAPIView(StaffEditorPermissionMixin, generics.UpdateAPIView):
 
 product_update_view = ProductUpdateAPIView.as_view()
 
-class ProductDestroyAPIView(StaffEditorPermissionMixin, generics.DestroyAPIView):
+class ProductDestroyAPIView(StaffEditorPermissionMixin, UserQuerySetMixin, generics.DestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
@@ -98,7 +106,7 @@ class ProductMixingView(
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
-
+    
     # if it is a get method
     def get(self, request, *args, **kwargs):
         pk = kwargs.get("pk")

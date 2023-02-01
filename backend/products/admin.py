@@ -7,7 +7,7 @@ from .models import Product
 class ProductAdmin(admin.ModelAdmin):
 
 	# add the fields of the model here
-	list_display = ("title","content","price","sale_price")
+	list_display = ("title","pk","content","price","sale_price","user","public")
 
 # we will need to register the
 # model class and the Admin model class
