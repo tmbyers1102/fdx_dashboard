@@ -17,7 +17,7 @@ class ProductSerializer(serializers.ModelSerializer):
     # owner = UserPublicSerializer(source='user', read_only=True)
 
     # this was just to illustrait how related records could be shown
-    # related_products = ProductInlineSerializer(source='user.product_set.all', read_only=True, many=True)
+    related_products = ProductInlineSerializer(source='user.product_set.all', read_only=True, many=True)
     
     # my_user_data = serializers.SerializerMethodField(read_only=True)
     # my_discount = serializers.SerializerMethodField(read_only=True)
@@ -46,7 +46,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'sale_price',
             # 'my_discount',
             # 'my_user_data',
-            # 'related_products',
+            'related_products',
             'public',
             'path',
             'endpoint',
