@@ -5,3 +5,10 @@ djangorestframework-simplejwt
 pyyaml
 requests
 django-cors-headers
+
+# added for docker/kube
+gunicorn
+django-dotenv
+psycopg2-binary
+django-storages
+boto3
